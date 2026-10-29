@@ -1,0 +1,46 @@
+# Dependencies
+Backend/node_modules/
+Frontend/node_modules/
+
+# Build output
+Backend/dist/
+Frontend/dist/
+
+# Environment variables
+Backend/.env
+Backend/.env.*
+!Backend/.env.example
+
+Frontend/.env
+Frontend/.env.*
+!Frontend/.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test coverage
+Backend/coverage/
+Frontend/coverage/
+
+# Vite cache
+Frontend/.vite/
+
+# Generated Prisma Client (adjust to your actual output path)
+Backend/src/generated/prisma/
+Backend/generated/prisma/
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE
+.idea/
+
+# Private keys and certificates
+*.pem
+*.key
+
+# TypeScript build cache
+*.tsbuildinfo
