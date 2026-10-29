@@ -1,0 +1,632 @@
+openapi: 3.0.0
+paths:
+  /api:
+    get:
+      operationId: AppController_getHello
+      parameters: []
+      responses:
+        "200":
+          description: ""
+      tags:
+        - App
+  /health/live:
+    get:
+      description: Answers 200 as long as the process is running. Checks no dependency.
+      operationId: HealthController_live
+      parameters: []
+      responses:
+        "200":
+          description: |-
+            The process is alive
+
+            The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - ok
+                      - degraded
+                    example: ok
+                  info:
+                    type: object
+                    example: &a1
+                      database:
+                        status: up
+                        responseTime: 12
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                          enum:
+                            - up
+                            - degraded
+                            - down
+                        responseTime:
+                          type: number
+                          description: Time the health indicator took to respond, in ms
+                      additionalProperties: true
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                          enum:
+                            - up
+                            - degraded
+                            - down
+                        responseTime:
+                          type: number
+                          description: Time the health indicator took to respond, in ms
+                      additionalProperties: true
+                    nullable: true
+                  details:
+                    type: object
+                    example: *a1
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                          enum:
+                            - up
+                            - degraded
+                            - down
+                        responseTime:
+                          type: number
+                          description: Time the health indicator took to respond, in ms
+                      additionalProperties: true
+        "503":
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - error
+                      - shutting_down
+                    example: error
+                  info:
+                    type: object
+                    example:
+                      database: &a2
+                        status: up
+                        responseTime: 12
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                          enum:
+                            - up
+                            - degraded
+                            - down
+                        responseTime:
+                          type: number
+                          description: Time the health indicator took to respond, in ms
+                      additionalProperties: true
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis: &a3
+                        status: down
+                        message: Could not connect
+                        responseTime: 3005
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                          enum:
+                            - up
+                            - degraded
+                            - down
+                        responseTime:
+                          type: number
+                          description: Time the health indicator took to respond, in ms
+                      additionalProperties: true
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database: *a2
+                      redis: *a3
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                          enum:
+                            - up
+                            - degraded
+                            - down
+                        responseTime:
+                          type: number
+                          description: Time the health indicator took to respond, in ms
+                      additionalProperties: true
+      summary: Liveness probe
+      tags: &a7
+        - Health
+  /health/ready:
+    get:
+      description: Answers 200 only if the app can reach the database.
+      operationId: HealthController_ready
+      parameters: []
+      responses:
+        "200":
+          description: |-
+            The app is ready to receive traffic
+
+            The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - ok
+                      - degraded
+                    example: ok
+                  info:
+                    type: object
+                    example: &a4
+                      database:
+                        status: up
+                        responseTime: 12
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                          enum:
+                            - up
+                            - degraded
+                            - down
+                        responseTime:
+                          type: number
+                          description: Time the health indicator took to respond, in ms
+                      additionalProperties: true
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                          enum:
+                            - up
+                            - degraded
+                            - down
+                        responseTime:
+                          type: number
+                          description: Time the health indicator took to respond, in ms
+                      additionalProperties: true
+                    nullable: true
+                  details:
+                    type: object
+                    example: *a4
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                          enum:
+                            - up
+                            - degraded
+                            - down
+                        responseTime:
+                          type: number
+                          description: Time the health indicator took to respond, in ms
+                      additionalProperties: true
+        "503":
+          description: |-
+            A dependency (database) is not reachable
+
+            The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - error
+                      - shutting_down
+                    example: error
+                  info:
+                    type: object
+                    example:
+                      database: &a5
+                        status: up
+                        responseTime: 12
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                          enum:
+                            - up
+                            - degraded
+                            - down
+                        responseTime:
+                          type: number
+                          description: Time the health indicator took to respond, in ms
+                      additionalProperties: true
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis: &a6
+                        status: down
+                        message: Could not connect
+                        responseTime: 3005
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                          enum:
+                            - up
+                            - degraded
+                            - down
+                        responseTime:
+                          type: number
+                          description: Time the health indicator took to respond, in ms
+                      additionalProperties: true
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database: *a5
+                      redis: *a6
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                          enum:
+                            - up
+                            - degraded
+                            - down
+                        responseTime:
+                          type: number
+                          description: Time the health indicator took to respond, in ms
+                      additionalProperties: true
+      summary: Readiness probe
+      tags: *a7
+  /api/notes:
+    post:
+      operationId: NotesController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateNoteDto"
+      responses:
+        "201":
+          description: Note created successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessEnvelopeDto"
+                  - properties:
+                      data:
+                        $ref: "#/components/schemas/NoteResponseDto"
+        "400":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseDto"
+        "503":
+          description: A dependency (database) is not reachable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseDto"
+      summary: Create a note
+      tags: &a8
+        - Notes
+    get:
+      operationId: NotesController_findAll
+      parameters: []
+      responses:
+        "200":
+          description: Notes retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessEnvelopeDto"
+                  - properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/NoteResponseDto"
+        "503":
+          description: A dependency (database) is not reachable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseDto"
+      summary: Get all notes
+      tags: *a8
+  /api/notes/{id}:
+    get:
+      operationId: NotesController_findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Note UUID
+          schema:
+            example: 550e8400-e29b-41d4-a716-446655440000
+            type: string
+      responses:
+        "200":
+          description: Note retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessEnvelopeDto"
+                  - properties:
+                      data:
+                        $ref: "#/components/schemas/NoteResponseDto"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseDto"
+        "503":
+          description: A dependency (database) is not reachable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseDto"
+      summary: Get a note by ID
+      tags: *a8
+    patch:
+      operationId: NotesController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Note UUID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateNoteDto"
+      responses:
+        "200":
+          description: Note updated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessEnvelopeDto"
+                  - properties:
+                      data:
+                        $ref: "#/components/schemas/NoteResponseDto"
+        "400":
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseDto"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseDto"
+        "503":
+          description: A dependency (database) is not reachable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseDto"
+      summary: Update a note
+      tags: *a8
+    delete:
+      operationId: NotesController_remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Note UUID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Note deleted successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessEnvelopeDto"
+                  - properties:
+                      data:
+                        $ref: "#/components/schemas/NoteResponseDto"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseDto"
+        "503":
+          description: A dependency (database) is not reachable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponseDto"
+      summary: Delete a note
+      tags: *a8
+info:
+  title: Mini Notes API
+  description: REST API for managing notes
+  version: 1.0.0
+  contact: {}
+tags: []
+servers: []
+components:
+  schemas:
+    ErrorResponseDto:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        statusCode:
+          type: number
+          example: 400
+        message:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+          example:
+            - email must be an email
+        path:
+          type: string
+          example: /auth/register
+        method:
+          type: string
+          example: POST
+        timestamp:
+          type: string
+          example: 2026-10-12T22:00:00.000Z
+      required:
+        - success
+        - statusCode
+        - message
+        - path
+        - method
+        - timestamp
+    SuccessEnvelopeDto:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        statusCode:
+          type: number
+          example: 200
+        path:
+          type: string
+          example: /auth/login
+        method:
+          type: string
+          example: POST
+        timestamp:
+          type: string
+          example: 2026-10-12T22:00:00.000Z
+      required:
+        - success
+        - statusCode
+        - path
+        - method
+        - timestamp
+    NoteResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 550e8400-e29b-41d4-a716-446655440000
+        title:
+          type: string
+          example: Learn AWS Deployment
+        content:
+          type: string
+          example: Deploy my NestJS API to EC2.
+        createdAt:
+          format: date-time
+          type: string
+          example: 2026-10-29T10:00:00.000Z
+        updatedAt:
+          format: date-time
+          type: string
+          example: 2026-10-29T10:00:00.000Z
+      required:
+        - id
+        - title
+        - content
+        - createdAt
+        - updatedAt
+    CreateNoteDto:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The title of the note
+          example: Learn AWS Deployment
+          maxLength: 150
+        content:
+          type: string
+          description: The content of the note
+          example: Deploy my NestJS API to EC2 and connect it to PostgreSQL on Amazon RDS.
+      required:
+        - title
+        - content
+    UpdateNoteDto:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The title of the note
+          example: Learn AWS Deployment
+          maxLength: 150
+        content:
+          type: string
+          description: The content of the note
+          example: Deploy my NestJS API to EC2 and connect it to PostgreSQL on Amazon RDS.
