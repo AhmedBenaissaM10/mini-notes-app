@@ -1,7 +1,7 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
-import  {describe, beforeAll, afterAll, expect, it, afterEach} from 'vitest'
+import { describe, beforeAll, afterAll, expect, it, afterEach } from 'vitest';
 import { AppModule } from './../src/app.module.js';
 import { PrismaService } from './../src/prisma/prisma.service.js';
 

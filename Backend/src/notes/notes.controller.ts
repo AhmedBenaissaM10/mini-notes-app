@@ -13,8 +13,10 @@ import { NotesService } from './notes.service.js';
 import { CreateNoteDto } from './dto/create-note.dto.js';
 import { UpdateNoteDto } from './dto/update-note.dto.js';
 import { NoteResponseDto } from './dto/note-response.dto.js';
-import { ApiEnvelope, ApiErrors } from '../common/swagger/api-docs.decorator.js';
-
+import {
+  ApiEnvelope,
+  ApiErrors,
+} from '../common/swagger/api-docs.decorator.js';
 
 @ApiTags('Notes')
 @Controller('notes')
