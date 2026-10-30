@@ -8,7 +8,7 @@ export const envSchema = z.object({
   FRONTEND_URL: z.url().default('http://localhost:5173'),
   DATABASE_URL: z.string().min(1),
   THROTTLE_DISABLED: z.stringbool().default(false),
-  DATABASE_SSL_CA: z.string()
+  DATABASE_SSL_CA: z.string(),
 });
 
 export type Env = z.infer<typeof envSchema>;
