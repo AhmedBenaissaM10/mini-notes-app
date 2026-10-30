@@ -1,5 +1,6 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { readFileSync } from 'node:fs';
 import { PrismaClient } from '../generated/prisma/client.js';
 import { PrismaPg } from '@prisma/adapter-pg';
 
@@ -9,15 +10,25 @@ export class PrismaService
   implements OnModuleInit, OnModuleDestroy
 {
   constructor(config: ConfigService) {
+    const caPath = config.get<string>('DATABASE_SSL_CA');
+
     super({
       adapter: new PrismaPg({
         connectionString: config.getOrThrow<string>('DATABASE_URL'),
+        ...(caPath && {
+          ssl: {
+            ca: readFileSync(caPath, 'utf8'),
+            rejectUnauthorized: true,
+          },
+        }),
       }),
     });
   }
+
   async onModuleInit() {
     await this.$connect();
   }
+
   async onModuleDestroy() {
     await this.$disconnect();
   }
